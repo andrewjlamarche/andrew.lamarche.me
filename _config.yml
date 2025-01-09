@@ -1,0 +1,98 @@
+# Welcome to Jekyll!
+#
+# This config file is meant for settings that affect your whole blog, values
+# which you are expected to set up once and rarely edit after that. If you find
+# yourself editing this file very often, consider using Jekyll's data files
+# feature for the data you need to update frequently.
+#
+# For technical reasons, this file is *NOT* reloaded automatically when you use
+# 'bundle exec jekyll serve'. If you change this file, please restart the server process.
+#
+# If you need help with YAML syntax, here are some quick references for you:
+# https://learn-the-web.algonquindesign.ca/topics/markdown-yaml-cheat-sheet/#yaml
+# https://learnxinyminutes.com/docs/yaml/
+#
+# Site settings
+# These are used to personalize your new site. If you look in the HTML files,
+# you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
+# You can create any custom variable you would like, and they will be accessible
+# in the templates via {{ site.myvariable }}.
+
+title: The Hack Shack Wiki
+description: >- # this means to ignore newlines until "baseurl:"
+  Hacking embedded and networking gear for fun.
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "https://wiki.lamarche.me" # the base hostname & protocol for your site, e.g. http://example.com
+twitter_username: andrewjlamarche
+github_username:  andrewjlamarche
+
+# Build settings
+remote_theme: sighingnow/jekyll-gitbook
+plugins:
+  - jekyll-feed
+  - jekyll-readme-index
+  - jekyll-remote-theme
+  - jemoji
+
+page_width: 800px
+
+toc:
+  enabled: true
+  h_min: 1
+  h_max: 3
+
+  favicon_path: /assets/gitbook/images/favicon.ico
+
+  markdown: kramdown
+  kramdown:
+    auto_ids: true
+    input: GFM
+    math_engine: mathjax
+    smart_quotes: lsquo,rsquo,ldquo,rdquo
+    toc_levels: 1..6
+    syntax_highlighter: rogue
+    syntax_highlighter:opts:
+      guess_lang: true
+
+syntax_highlighter_style: colorful
+
+markdown_ext: markdown,mkdown,mkdn,mkd,md
+
+permalink: /:categories/:year-:month:-day:title:output_ext
+
+collections:
+  pages:
+    output: true
+    permalink: /:collection/:path/
+  others:
+    output: true
+    permalink: /:collection/:path/
+
+ordered_collections:
+  - posts
+  - pages
+  - others
+
+destination: ./_site
+incremental: false
+regenerate: true
+
+# Exclude from processing.
+# The following items will not be processed, by default.
+# Any item listed under the `exclude:` key here will be automatically added to
+# the internal "default list".
+#
+# Excluded items can be processed by explicitly listing the directories or
+# their entries' file path in the `include:` list.
+#
+# exclude:
+#   - .sass-cache/
+#   - .jekyll-cache/
+#   - gemfiles/
+#   - Gemfile
+#   - Gemfile.lock
+#   - node_modules/
+#   - vendor/bundle/
+#   - vendor/cache/
+#   - vendor/gems/
+#   - vendor/ruby/
