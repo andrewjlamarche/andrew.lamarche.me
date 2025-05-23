@@ -1,0 +1,65 @@
+--- a/arch/arm64/boot/dts/mediatek/mt7988a-bananapi-bpi-r4.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt7988a-bananapi-bpi-r4.dtsi
+@@ -74,6 +74,62 @@
+ 			gpios = <&pio 63 GPIO_ACTIVE_HIGH>;
+ 			default-state = "off";
+ 		};
++
++		led_dome0: led-dome0 {
++			label = "blue:dome0";
++			function = LED_FUNCTION_INDICATOR;
++			color = <LED_COLOR_ID_BLUE>;
++			gpios = <&pio 28 GPIO_ACTIVE_LOW>;
++			default-state = "off";
++		};
++
++		led_dome1: led-dome1 {
++			label = "blue:dome1";
++			function = LED_FUNCTION_INDICATOR;
++			color = <LED_COLOR_ID_BLUE>;
++			gpios = <&pio 29 GPIO_ACTIVE_LOW>;
++			default-state = "off";
++		};
++
++		led_dome2: led-dome2 {
++			label = "blue:dome2";
++			function = LED_FUNCTION_INDICATOR;
++			color = <LED_COLOR_ID_BLUE>;
++			gpios = <&pio 30 GPIO_ACTIVE_LOW>;
++			default-state = "off";
++		};
++
++		led_dome3: led-dome3 {
++			label = "blue:dome3";
++			function = LED_FUNCTION_INDICATOR;
++			color = <LED_COLOR_ID_BLUE>;
++			gpios = <&pio 31 GPIO_ACTIVE_LOW>;
++			default-state = "off";
++		};
++
++		led_dome4: led-dome4 {
++			label = "blue:dome4";
++			function = LED_FUNCTION_INDICATOR;
++			color = <LED_COLOR_ID_BLUE>;
++			gpios = <&pio 52 GPIO_ACTIVE_LOW>;
++			default-state = "off";
++		};
++
++		led_dome5: led-dome5 {
++			label = "blue:dome5";
++			function = LED_FUNCTION_INDICATOR;
++			color = <LED_COLOR_ID_BLUE>;
++			gpios = <&pio 53 GPIO_ACTIVE_LOW>;
++			default-state = "off";
++		};
++
++		led_dome6: led-dome6 {
++			label = "blue:dome6";
++			function = LED_FUNCTION_INDICATOR;
++			color = <LED_COLOR_ID_BLUE>;
++			gpios = <&pio 62 GPIO_ACTIVE_LOW>;
++			default-state = "off";
++		};
+ 	};
+ };
+ 
