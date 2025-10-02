@@ -53,7 +53,7 @@ armv6eb core: **192.168.254.253**, network device processor (ndp0)
        valid_lft forever preferred_lft forever
 ```
 
-i686 core: **192.168.254.254**, appication device processor (adp0)
+i686 core: **192.168.254.254**, application device processor (adp0)
 ```
 13: adp0.555@adp0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 2000 qdisc noqueue state UP group default qlen 1000
     link/ether 00:50:f1:80:00:00 brd ff:ff:ff:ff:ff:ff

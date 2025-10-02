@@ -8,7 +8,7 @@ tags: [netgear, wpn824]
 
 # Concept
 
-Since around the 802.11ac (Wi-Fi 5) era, all the new networking gear has been hideous. Bulky and clunky designs, one single LED indicator and antennas that look like a spider are _not_ it IMO. And quite frankly, I'm okay if the astronauts on the space station can't pick up my SSID with their iPhone. I'm on a mission to change that without sacrifing (too much) performance.
+Since around the 802.11ac (Wi-Fi 5) era, all the new networking gear has been hideous. Bulky and clunky designs, one single LED indicator and antennas that look like a spider are _not_ it IMO. And quite frankly, I'm okay if the astronauts on the space station can't pick up my SSID with their iPhone. I'm on a mission to change that without sacrificing (too much) performance.
 
 NETGEAR's 802.11g and 802.11n designs have held my heart, somewhat resembling the original unibody MacBook. Slim, sleek and stylish without being annoying.
 
@@ -17,13 +17,13 @@ _WPN824 Positioned Vertically - source: https://www.netgear.jp/productsimg/image
 
 The WPN824 (non N), WNDR3300, and WNDR3400v1 also had a fun feature -- a ring of 7 or 8 LEDs in the blue dome on top, representing activity on each antenna. Truthfully, I think the only model that actually used the dome LEDs to show which antennas were in use was the WPN824, as it was based on [a design from Video54](https://www.smallnetbuilder.com/everything-else/other-features/ces2005/). The WNDR3300 and WNDR3400v1 likely just blinked on each radio's tx/rx, like a front panel LED indicator. I don't think Broadcom, who designed the chips in these two, actually implemented blinking an LED based on the antenna usage in the MIMO array.
 
-Further for this project, implementing the true antenna utilization functionality will be out of scope for a few reasons, most importantly being that we are not spinning our own hardware/drivers. Instead, we will be taking a shell from a WPN824v2 and a BananaPi BPi-R4 with an 802.11be chip, modifying the device tree and LED behviors, and making the board fit into the shell with functioning front panel LEDs one way or another. I'll dub this the WPN824BE.
+Further for this project, implementing the true antenna utilization functionality will be out of scope for a few reasons, most importantly being that we are not spinning our own hardware/drivers. Instead, we will be taking a shell from a WPN824v2 and a BananaPi BPi-R4 with an 802.11be chip, modifying the device tree and LED behaviors, and making the board fit into the shell with functioning front panel LEDs one way or another. I'll dub this the WPN824BE.
 
 In part 1, we will be figuring out how to Make LEDs Great Again.
 
 # WPN824 Teardown
 
-Let's start with a teardown of the WPN824. There are 6 TR8 secrews on the undersize, 4 of which are under the rubber feet. Remove those and carefully lift the top off.
+Let's start with a teardown of the WPN824. There are 6 TR8 screws on the undersize, 4 of which are under the rubber feet. Remove those and carefully lift the top off.
 
 ![wpn824-teardown](/assets/images/wpn824be/wpn824-teardown.jpg)
 _WPN824 Teardown_
@@ -40,43 +40,43 @@ A multimeter can tell us what each pin on the router PCB is doing. First, with t
 
 Next, set the multimeter to DC voltage mode and power the router on. Touch the black probe to ground, and measure the rest of the unknown pins. We're left with the following configuration:
 
-|Functionality|PIN|PIN|Functionality|
-|---|---|---|---|
-|+3.3v|1|2|antenna|
-|antenna|3|4|antenna|
-|antenna|5|6|antenna|
-|antenna|7|8|antenna|
-|GND|9|10|no connect|
+| Functionality | PIN | PIN | Functionality |
+| ------------- | --- | --- | ------------- |
+| +3.3v         | 1   | 2   | antenna       |
+| antenna       | 3   | 4   | antenna       |
+| antenna       | 5   | 6   | antenna       |
+| antenna       | 7   | 8   | antenna       |
+| GND           | 9   | 10  | no connect    |
 
-Pins labeled `antenna` are flucuating between 0v and +3.3v rapidly, indicating that there is supposed activity on said antenna. The others are self-explainatory.
+Pins labeled `antenna` are fluctuating between 0v and +3.3v rapidly, indicating that there is supposed activity on said antenna. The others are self-explanatory.
 
 # Putting Theory to Test
 
 This stage assumes you already have a vanilla OpenWrt install on the Bananapi BPi-R4. Let's power it up and grab a 3 Female-to-Female jumper wires. The BPi-R4 has the following GPIO headers, where pin 1 is indicated by the white dot on the PCB:
 
-|Functionality|PIN|PIN|Fuctionality|
-|---|---|---|---|
-|+3.3v|1|2|+5v|
-|GPIO18|3|4|+5v|
-|GPIO17|5|6|GND|
-|GPIO62|7|8|GPIO59|
-|GND|9|10|GPIO58|
-|GPIO81|11|12|GPIO51|
-|GPIO80|13|14|GND|
-|GPIO50|15|16|GPIO61|
-|+3.3v|17|18|GPIO60|
-|GPIO30|19|20|GND|
-|GPIO29|21|22|GPIO53|
-|GPIO31|23|24|GPIO28|
-|GND|25|26|GPIO52|
+| Functionality | PIN | PIN | Functionality |
+| ------------- | --- | --- | ------------- |
+| +3.3v         | 1   | 2   | +5v           |
+| GPIO18        | 3   | 4   | +5v           |
+| GPIO17        | 5   | 6   | GND           |
+| GPIO62        | 7   | 8   | GPIO59        |
+| GND           | 9   | 10  | GPIO58        |
+| GPIO81        | 11  | 12  | GPIO51        |
+| GPIO80        | 13  | 14  | GND           |
+| GPIO50        | 15  | 16  | GPIO61        |
+| +3.3v         | 17  | 18  | GPIO60        |
+| GPIO30        | 19  | 20  | GND           |
+| GPIO29        | 21  | 22  | GPIO53        |
+| GPIO31        | 23  | 24  | GPIO28        |
+| GND           | 25  | 26  | GPIO52        |
 
 Let's connect pin 1 (+3.3v) on the BPi-R4 to pin 1 (+3.3v) on the antenna PCB, pin 25 (GND) on the BPi-R4 to pin 25 (GND) on the antenna PCB, and pin 18 (GPIO60) on the BPi-R4 to pin 2 on the antenna PCB:
 
-|BPi-R4 Functionality|BPi-R4 PIN|LED Header PIN| LED Functionality|
-|---|---|---|---|
-|+3.3v|1|1|+3.3v|
-|GND|25|9|GND|
-|GPIO28|24|2|antenna|
+| BPi-R4 Functionality | BPi-R4 PIN | LED Header PIN | LED Functionality |
+| -------------------- | ---------- | -------------- | ----------------- |
+| +3.3v                | 1          | 1              | +3.3v             |
+| GND                  | 25         | 9              | GND               |
+| GPIO28               | 24         | 2              | antenna           |
 
 In the default state, an LED should light up on the LED PCB! Now, let's figure out how to control it.
 
@@ -268,17 +268,17 @@ make[2]: Leaving directory '/home/alamarche/openwrt/scripts/config'
 
 Now, we need 6 more (9 total) Female-to-Female jumper wires to run from the BPi-R4's GPIO header to the WPN824's LED header. The final configuration is like so:
 
-|BPi-R4 Functionality|BPi-R4 PIN|LED Header PIN| LED Functionality|
-|---|---|---|---|
-|+3.3v|1|1|+3.3v|
-|GPIO28|24|2|antenna0|
-|GPIO29|21|3|antenna1|
-|GPIO30|19|4|antenna2|
-|GPIO31|23|5|antenna3|
-|GPIO52|26|6|antenna4|
-|GPIO53|22|7|antenna5|
-|GPIO62|7|8|antenna6|
-|GND|25|9|GND|
+| BPi-R4 Functionality | BPi-R4 PIN | LED Header PIN | LED Functionality |
+| -------------------- | ---------- | -------------- | ----------------- |
+| +3.3v                | 1          | 1              | +3.3v             |
+| GPIO28               | 24         | 2              | antenna0          |
+| GPIO29               | 21         | 3              | antenna1          |
+| GPIO30               | 19         | 4              | antenna2          |
+| GPIO31               | 23         | 5              | antenna3          |
+| GPIO52               | 26         | 6              | antenna4          |
+| GPIO53               | 22         | 7              | antenna5          |
+| GPIO62               | 7          | 8              | antenna6          |
+| GND                  | 25         | 9              | GND               |
 
 # Upgrading OpenWrt
 
@@ -295,7 +295,7 @@ blue:dome4             mt7530-0:00:green:lan
 
 # Configuring the LEDs
 
-My BE14 Wi-Fi 7 card has not arrived yet, but the process to configure the LEDs is the same. Start by opening up LuCI and heading to `System > LED Configuration`. Click `Add LED action`, give it a name, select the led (`blue:domeX`), where `X` is 0-6, represending each of the 7 LEDs, and for the trigger select `Network device activity`. When the BE14 card arrives, I'll set the device to the wireless network, and choose `Transmit` and `Recieve` for the trigger. 
+My BE14 Wi-Fi 7 card has not arrived yet, but the process to configure the LEDs is the same. Start by opening up LuCI and heading to `System > LED Configuration`. Click `Add LED action`, give it a name, select the led (`blue:domeX`), where `X` is 0-6, representing each of the 7 LEDs, and for the trigger select `Network device activity`. When the BE14 card arrives, I'll set the device to the wireless network, and choose `Transmit` and `Receive` for the trigger. 
 
 ![wpn824-led-configuration](/assets/images/wpn824be/wpn824-dome-led-configuration.png)
 _WPN824 Dome LED Configuration_
